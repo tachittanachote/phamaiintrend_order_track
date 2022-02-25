@@ -84,9 +84,11 @@
                                             </div>
                                         </td>
                                         <td class="align-middle py-3">
-                                            <div class="d-flex align-items-center">
-                                                <button class="btn btn-danger logout-line" data-id="{{\App\Customer::where('facebook_name', $order->facebook_name)->first()->id}}">บังคับออกจากระบบ LINE</button>
-                                            </div>
+                                            @if(\App\Customer::where('facebook_name', $order->facebook_name)->first()->line_id)
+                                                <div class="d-flex align-items-center">
+                                                    <button class="btn btn-danger logout-line" data-id="{{\App\Customer::where('facebook_name', $order->facebook_name)->first()->id}}">บังคับออกจากระบบ LINE</button>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
