@@ -26,6 +26,7 @@
     "dependencies": {
         "@splidejs/splide": "^3.6.9",
         "animate.css": "^4.1.1",
+        "html2canvas": "^1.4.1",
         "html5-qrcode": "^2.1.6",
         "jquery-migrate": "^3.3.2",
         "jquery-mousewheel": "^3.1.13",

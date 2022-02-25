@@ -387,22 +387,7 @@ class HomeController extends Controller
 
     public function ordersummaryview(Request $request)
     {
-        $customerName = $request->facebook_name;
-
-        if (!OrderList::where('facebook_name', $request->facebook_name)->first()) {
-            return redirect()->back();
-        }
-
-        $startAt = $request->startAt;
-        $endAt = $request->endAt;
-        $orders = OrderList::where('facebook_name', $request->facebook_name);
-
-        if ($startAt && $endAt) {
-            $orders->whereBetween('order_date', [Carbon::parse($startAt)->format('Y-m-d'), Carbon::parse($endAt)->format('Y-m-d')])->orderBy('id', 'asc');
-        }
-
-        $result = $orders->get();
-        return view('ordersummarycustomerview', compact('result', 'customerName', 'startAt', 'endAt'));
+        return view('ordersummarycustomerview');
     }
 
     public function scan(Request $request) {

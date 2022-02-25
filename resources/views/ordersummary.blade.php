@@ -67,7 +67,7 @@
         $count_ok = 0;
 	@endphp
 
-    <div class="container mt-5">
+    <div class="container mt-5" id="canvas">
         <div class="row">
             <div class="col">
                 <div class="h5 text-center">
@@ -210,7 +210,9 @@
             @endif
 
         </div>
+    </div>
 
+    <div class="container mt-2">
         <input id="customer_id" value="{{\App\Customer::where('facebook_name', $customerName)->first()->id}}" hidden/>
         <input id="order_progress" value="{{$count_no}}" hidden/>
         <input id="order_completed" value="{{$count_ok}}" hidden/>

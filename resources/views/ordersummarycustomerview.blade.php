@@ -14,7 +14,7 @@
     <style>
 
         html, body {
-            background-color: #f3f3f3;
+            background-color: #ffffff;
             font-family: 'Prompt', sans-serif;
             color: #565656;
         }
@@ -63,112 +63,7 @@
 <body>
 
     <div class="container mt-5 mb-5">
-        <div class="row">
-            <div class="col">
-                <div class="h5 text-center">
-                    สรุปรายการออเดอร์
-                </div>
-                <div class="text-center">ร้านผ้าไหมอินเทรนด์</div>
-                <div class="text-center">รายการออเดอร์วันที่ {{\Carbon\Carbon::parse($startAt)->format('d/m/Y')}}</div>
-            </div>
-        </div>
-        <table class="w-100 mt-3" border="1">
-            <tbody>
-                <tr>
-                    <td style="width: 50%;">
-                        <p class="font-weight-bold">ผู้จัดส่ง: </p>
-                        <div>ร้านผ้าไหมอินเทรนด์</div>
-                        <div>221 หมู่2 ต.ห้วยแก อ.ชนบท จ.ขอนแก่น</div>
-                        <div>40180</div>
-                        <div>เบอร์โทรศัพท์ 088-8215969</div>
-                    </td>
-                    <td style="width: 50%;">
-                        @php
-                            $user = \App\OrderList::where('facebook_name', $customerName)->first();
-                        @endphp
-                        <p class="font-weight-bold">ผู้รับ: </p>
-                        <div>หมายเลขลูกค้า: PM000-{{\App\Customer::where('facebook_name', $customerName)->first()->id}}</div>
-                        <div>คุณ{{$user->customer_name}} (Facebook: {{$customerName}})</div>
-                        <div>{{$user->address}}</div>
-                        <div>เบอร์โทรศัพท์ {{$user->phone_number}}</div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="mt-3">
-
-            @php
-                $completeCount = 0;
-                foreach($result as $r) {
-                    if($r->deliveried == 1) {
-                        $completeCount = 1;
-                    }
-                }
-            @endphp
-            @if($completeCount > 0)
-            <div class="mb-3">
-                <div class="mb-1">รายการที่จัดส่ง</div>
-                <table class="w-100" border="1">
-                    <thead>
-                        <tr>
-                            <th style="width: 10%;">ลำดับ</th>
-                            <th>รายการสินค้า</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $count = 0; @endphp
-                        @foreach($result as $r)
-                            @if($r->deliveried == 1)
-                            @php $count = $count + 1; @endphp
-                            <tr>
-                                <td>{{$count}}</td>
-                                <td>{{$r->detail}}</td>
-                            </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
-
-            @php
-                $progressCount = 0;
-                foreach($result as $r) {
-                    if($r->deliveried == 0) {
-                        $progressCount = 1;
-                    }
-                }
-            @endphp
-
-            @if($progressCount > 0)
-            <div>
-                <div class="mb-1">รายการค้างจัดส่ง</div>
-                <table class="w-100" border="1">
-                    <thead>
-                        <tr>
-                            <th style="width: 10%;">ลำดับ</th>
-                            <th>รายการสินค้า</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $count = 0; @endphp
-                        @foreach($result as $r)
-                            @if($r->deliveried == 0)
-                            @php $count = $count + 1; @endphp
-                            <tr>
-                                <td>{{$count}}</td>
-                                <td>{{$r->detail}}</td>
-                            </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
-
-        </div>
-
+        <img class="img-fluid" src="https://order.phamaiintrend.co/storage/upload/customer/Uxw5XB90qj.png">
     </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

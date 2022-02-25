@@ -15,6 +15,7 @@ use App\User;
 use App\WorkPrint;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 
 class OrderController extends Controller
 {
@@ -303,6 +304,14 @@ class OrderController extends Controller
 
         $user = Customer::where('id', $request->customer_id)->first();
 
+        $image = $request->image;  // your base64 encoded
+        $image = str_replace('data:image/png;base64,', '', $image);
+        $image = str_replace(' ', '+', $image);
+        $imageName = str_random(10) . '.' . 'png';
+        File::put(storage_path() . '/app/public/upload/customer/' . $imageName, base64_decode($image));
+
+        $img = '/upload/customer/' . $imageName;
+    
         if($user->line_id) {
 
             $curl = curl_init();
@@ -430,7 +439,7 @@ class OrderController extends Controller
                                     "action": {
                                     "type": "uri",
                                     "label": "ตรวจสอบเพิ่มเติม",
-                                    "uri": "' . $request->url . '/view"
+                                    "uri": "' . $request->url .'?image='.$img.'"
                                     },
                                     "margin": "sm"
                                 },
@@ -464,7 +473,9 @@ class OrderController extends Controller
                 ),
             ));
             $response = curl_exec($curl);
+            return $response;
             curl_close($curl);
+
         }
 
         return response()->json([

@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import html2canvas from 'html2canvas'
 
 $(document).ready(() => {
     console.log("Ready!")
@@ -45,21 +46,25 @@ $(document).ready(() => {
             //     )
             // }
         }).then((orderList) => {
-            axios.post('/print/customerorder/confirm', {
-                orderList: orderList,
-                complete_count: $("#order_completed").val(),
-                progress_count: $("#order_progress").val(),
-                customer_id: $("#customer_id").val(),
-                url: 'https://order.phamaiintrend.co/ordersummary/view' + window.location.search,
-            }).then((resp) => {
-                swalWithBootstrapButtons.fire(
-                    '',
-                    'ยืนยันการปริ้นข้อมูลเรียบร้อยแล้ว',
-                    'success'
-                )
-            }).catch((err) => {
-                console.log(err)
-            })
+
+            html2canvas(document.querySelector("#canvas")).then(canvas => {
+                axios.post('/print/customerorder/confirm', {
+                    orderList: orderList,
+                    complete_count: $("#order_completed").val(),
+                    progress_count: $("#order_progress").val(),
+                    customer_id: $("#customer_id").val(),
+                    url: 'https://order.phamaiintrend.co/ordersummary/view',
+                    image: canvas.toDataURL('image/png')
+                }).then((resp) => {
+                    swalWithBootstrapButtons.fire(
+                        '',
+                        'ยืนยันการปริ้นข้อมูลเรียบร้อยแล้ว',
+                        'success'
+                    )
+                }).catch((err) => {
+                    console.log(err)
+                })
+            });
         })
     }
 
