@@ -1,0 +1,120 @@
+html, body {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+}
+
+.modal-dialog {
+    background-color: #ffffff00 !important;
+}
+
+.modal-content {
+    background-color: #ffffff !important;
+}
+
+.nav-phamai {
+    background: linear-gradient(270deg,#d4ccc1,#f7f4f1);
+}
+
+.dark-yellow {
+        color: black !important;
+}
+
+.avatar-placeholder { 
+   color: #957500 !important; 
+}
+
+.sidebar-heading {
+    color: #ffa500 !important;
+}
+
+.header-invoker {
+    color: #9d7c75 !important;
+}
+
+.header-invoker:hover {
+    color: #9d7c75 !important;
+}
+
+.content {
+    background: url(/images/bgshine.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.table thead th {
+    border-bottom: 2px solid #a1a1a1 !important;
+}
+
+.table td, .table th {
+    border-top: 1px solid #a1a1a1 !important;
+}
+
+.fade {
+    background: #d4ccc152;
+}
+
+.sidebar-heading {
+    color: #433228!important;
+    font-weight: bold;
+}
+
+.side-nav-menu-link {
+    font-weight: bold;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.clickable-btn {
+    cursor: pointer;
+}
+
+.clickable:hover {
+    background: #cfc7bc;
+    border: solid 1px #fff;
+}
+
+.del-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    right: 20px;
+    color: red;
+    cursor: pointer;
+}
+
+.border-divide {
+    height: 100%;
+    border: 1px solid #433228;
+}
+
+.text-red {
+    color: #a10000;
+}
+
+.badge-success, .badge-warning {
+    color: #282828 !important;
+}
+
+.badge-greenlight {
+    color: #282828 !important;
+    background-color: #cadc0c;
+}
+
+.badge-green{
+    color: #282828 !important;
+    background-color: #27dc0c;
+}
+
+.pagination {
+    flex-wrap: wrap;
+}
+
+.page-item+.page-item {
+    margin-bottom: 10px;
+}
+
+.reader__dashboard {
+    display: none;
+}
