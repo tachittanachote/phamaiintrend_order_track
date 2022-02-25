@@ -13,6 +13,21 @@ class CustomerController extends Controller
         $this->middleware('auth');
     }
 
+    public function logoutLine(Request $request) {
+        $customer = Customer::where('id', $request->id)->update([ 'line_id' => null ]);
+        if ($customer) {
+            return response()->json([
+                'status' => 'success',
+                'result' => 'ดำเนินการสำเร็จ',
+            ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'ไม่สามารถดำเนินการได้',
+            ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+        }
+    }
+
     public function addCustomer(Request $request) {
 
         $customerCheck = Customer::where('facebook_name', $request->facebook_name)->first();

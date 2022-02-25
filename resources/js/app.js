@@ -162,6 +162,24 @@ $(document).ready(() => {
         })
     })
 
+    $(".logout-line").on("click", function (e) {
+        e.preventDefault();
+
+        const id = $(this).attr('data-id');
+        axios.post('/logout-line', {
+            id: id
+        }).then((resp) => {
+            Swal.fire({
+                icon: resp.data.status,
+                text: resp.data.result,
+            }).then((e) => {
+                window.location.reload();
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
+    })
+
 })
 
 

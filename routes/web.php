@@ -66,3 +66,4 @@ Route::post('/order/editdetail/remove', 'OrderController@removeEditDetail');
 Route::post('/product/image', 'OrderController@fetchProductImage')->name('fetch.product.image');
 
 Route::get('/timeline', 'HomeController@timeline')->name('timeline');
+Route::post('/logout-line', 'CustomerController@logoutLine')->name('customer.logout');

@@ -43,6 +43,7 @@
                                             <th class="font-weight-semi-bold border-top-0 py-2">ที่อยู่</th>
                                             <th class="font-weight-semi-bold border-top-0 py-2">เบอร์โทรศัพท์</th>
                                             <th class="font-weight-semi-bold border-top-0 py-2"></th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -80,6 +81,11 @@
                                         <td class="align-middle py-3">
                                             <div class="d-flex align-items-center">
                                                 <a target="_blank" rel="noopener noreferrer" class="btn btn-warning" href="/customer/edit?name={{$order->facebook_name}}" style="color:black">แก้ไขข้อมูล</a>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle py-3">
+                                            <div class="d-flex align-items-center">
+                                                <button class="btn btn-danger logout-line" data-id="{{\App\Customer::where('facebook_name', $order->facebook_name)->first()->id}}">บังคับออกจากระบบ LINE</button>
                                             </div>
                                         </td>
                                     </tr>
