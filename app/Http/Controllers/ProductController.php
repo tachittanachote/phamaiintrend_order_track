@@ -31,6 +31,7 @@ class ProductController extends Controller
         $product = Product::create([
             'product_code' => $request->product_code, 
             'price' => $request->product_price, 
+            'detail' => $request->product_detail,
         ]);
 
         $imageFile = time().'.'.$request->product_image->getClientOriginalExtension();

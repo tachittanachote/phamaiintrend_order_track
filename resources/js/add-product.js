@@ -7,9 +7,18 @@ $(document).ready(() => {
 
     const productCodeFeedback = $('#product_code-feedback');
     const productPriceFeedback = $('#product_price-feedback');
+    const productDetailFeedback = $('#product_detail-feedback');
 
     const productCode = $('#product_code')
     const productPrice = $('#product_price')
+    const productDetail = $('#product_detail')
+
+    $(productDetail).on('input', function (e) {
+        if (productDetail.val().length > 0) {
+            productDetail.removeClass("is-invalid")
+            productDetailFeedback.css('display', 'none')
+        }
+    })
 
     $(productCode).on('input', function (e) {
         if (productCode.val().length > 0) {
@@ -39,19 +48,25 @@ $(document).ready(() => {
             productPriceFeedback.css('display', 'block')
         }
 
+        if (!productDetail.val()) {
+            productDetail.addClass("is-invalid")
+            productDetailFeedback.css('display', 'block')
+        }
+
         if (!$("#upload").val()) {
             $('#upload').addClass("is-invalid")
             $('#upload-feedback').css('display', 'block')
         }
 
 
-        if (productCode.val() && productPrice.val() && $("#upload").val()) {
+        if (productCode.val() && productPrice.val() && $("#upload").val() && productDetail.val()) {
             const formData = new FormData();
             const file = document.querySelector('#upload');
 
             formData.append("product_image", file.files[0]);
             formData.append("product_code", productCode.val());
             formData.append("product_price", productPrice.val());
+            formData.append("product_detail", productDetail.val());
 
             axios({
                 method: 'post',

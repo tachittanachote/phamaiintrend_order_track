@@ -3,27 +3,36 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import select2 from 'select2'
 
-$(document).ready(() => {
+$(document).ready(async () => {
     console.log("Ready!")
 
     $('#product').select2();
     $('#customer_name').select2();
 
-    $('#add_order').on('click', function(e) {
-        axios.post('/order/add', {
-            order_timestamp: $('#order_date').val()
+    var product = $("#product");
+
+    var productDetail = await getProductDetail(product.val())
+
+    $("#product_price").val(productDetail.price)
+    $("#detail").val(productDetail.product_detail)
+
+    $("#product").on('change', async function(e) {
+        var productDetail = await getProductDetail($(this).val())
+        $("#product_price").val(productDetail.price)
+        $("#detail").val(productDetail.product_detail)
+    })
+})
+
+function getProductDetail(product_code) {
+    return new Promise((resolve, reject) => {
+        axios.post('/product/detail', {
+            product_code: product_code
         }).then((resp) => {
-            Swal.fire({
-                icon: resp.data.status,
-                text: resp.data.result,
-            }).then((e) => {
-                window.location.reload();
-            })
+            resolve(resp.data.result)
         }).catch((err) => {
-            console.log(err)
+            reject(err)
         })
     })
-
-})
+}
 
 

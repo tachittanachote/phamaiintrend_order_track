@@ -251,7 +251,7 @@ class HomeController extends Controller
                                         },
                                         {
                                             "type": "text",
-                                            "text": "'.$order->detail.'",
+                                            "text": "'.$order->product_code." ".$order->detail.'",
                                             "size": "14px",
                                             "wrap": true,
                                             "color": "#5F5F5F"

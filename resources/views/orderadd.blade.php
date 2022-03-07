@@ -6,7 +6,7 @@
 <div class="row mt-4">
 	<div class="col-12">
 
-        <div class="h3 mb-3">อัพโหลดเอกข้อมูลสาร</div>
+        <div class="h3 mb-3">เพิ่มข้อมูลออเดอร์</div>
 
         <div class="card">
             <div class="card-body">
@@ -56,12 +56,8 @@
 						</select>
 					</div>
 					<div class="form-group">
-						<label for="address">ที่อยู่</label>
-						<input type="text" class="form-control" id="address" name="address" required>
-					</div>
-					<div class="form-group">
-						<label for="phone_number">เบอร์โทรศัพท์</label>
-						<input type="text" class="form-control" id="phone_number" name="phone_number" required>
+						<label for="detail">รายละเอียด</label>
+						<input type="text" class="form-control" id="detail" name="detail" required >
 					</div>
 					<div class="form-group">
 						<label for="quantity">จำนวนสินค้า</label>
@@ -76,12 +72,14 @@
 						<input type="number" class="form-control" id="total_price" min="0" name="total_price" required>
 					</div>
 					<div class="form-group">
-						<label for="detail">รายละเอียด</label>
-						<input type="text" class="form-control" id="detail" name="detail" required>
-					</div>
-					<div class="form-group">
 						<label for="order_date">วันที่สั่ง</label>
 						<input type="date" class="form-control" id="order_date" name="order_date" required>
+					</div>
+					<div class="form-check mb-3">
+						<input class="form-check-input" type="checkbox" value="" id="is_fix">
+						<label class="form-check-label" for="is_fix">
+							ระบุว่าเป็นงานแก้
+						</label>
 					</div>
 					<div class="form-group">
 						<button type="submit" class="btn btn-primary">เพิ่มออเดอร์</button>
@@ -100,4 +98,4 @@
 
 @section('scripts')
 <script src="{{ mix('js/add-order.js') }}" defer></script>
-@endsection
+@endsection 

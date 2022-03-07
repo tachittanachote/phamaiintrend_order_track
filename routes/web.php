@@ -64,6 +64,10 @@ Route::post('/order/editdetail/add', 'OrderController@addEditDetail');
 Route::post('/order/editdetail/remove', 'OrderController@removeEditDetail');
 
 Route::post('/product/image', 'OrderController@fetchProductImage')->name('fetch.product.image');
+Route::post('/product/detail', 'OrderController@productDetail')->name('fetch.product.image');
 
 Route::get('/timeline', 'HomeController@timeline')->name('timeline');
 Route::post('/logout-line', 'CustomerController@logoutLine')->name('customer.logout');
+Route::get('/promotion', 'PromotionController@promotion')->name('promotion');
+Route::post('/promotion/add', 'PromotionController@promotionAdd')->name('promotion.add');
+Route::post('/promotion/remove', 'PromotionController@promotionRemove')->name('promotion.remove');

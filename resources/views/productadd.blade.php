@@ -25,6 +25,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label for="product_detail">ราคา</label>
+                    <input type="text" class="form-control" id="product_detail">
+                    <div id="product_detail-feedback" class="invalid-feedback">
+                        โปรดระบุข้อมูลให้ครบถ้วน
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="upload">
                         <label class="custom-file-label" for="upload" id="upload-label">เลือกอัพโหลดรูปภาพ</label>
@@ -59,6 +66,8 @@
                         <thead>
                             <tr>
                                 <th scope="col">รหัสสินค้า</th>
+                                <th scope="col">รูปภาพ</th>
+                                <th scope="col">รายละเอียด</th>
                                 <th scope="col">เวลา</th>
                             </tr>
                         </thead>
@@ -66,6 +75,17 @@
                             @foreach($products as $product)
                             <tr>
                                 <td>{{$product->product_code}}</td>
+                                <td>
+                                    @php
+                                        $productImage = \App\ProductImage::where('product_code', $product->product_code)->first();
+                                    @endphp
+                                    @if($productImage)
+                                        <button class="btn btn-secondary btn-sm w-100" data-toggle="modal" data-target="#image-{{$product->id}}"><i class="far fa-eye"></i> ดู</button>
+                                    @else
+                                        <a target="_blank" rel="noopener noreferrer" href="/add-product-image" class="btn btn-secondary btn-sm w-100"><i class="fas fa-plus"></i> เพิ่มรูปภาพ</a>
+                                    @endif
+                                </td>
+                                <td>{{$product->detail}}</td>
                                 <td>{{$product->created_at}}</td>
                             </tr>
                             @endforeach
@@ -80,7 +100,33 @@
 @endsection
 
 @section('modal')
-
+@if(count($products) > 0)
+    @foreach($products as $product)
+    <div class="modal fade" id="image-{{$product->id}}" tabindex="-1" aria-labelledby="image-{{$product->id}}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="image-{{$product->id}}">รูปภาพหมายเลขสินค้า</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @php
+                $productImage = \App\ProductImage::where('product_code', $product->product_code)->first();
+            @endphp
+            @if($productImage)
+            <img class="img-fluid" src="/storage/upload/{{$productImage->image_url}}" alt="{{$productImage->product_code}}">
+            @endif
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary w-100" class="close" data-dismiss="modal" aria-label="Close">ตกลง</button>
+        </div>
+        </div>
+    </div>
+    </div>
+    @endforeach
+@endif
 @endsection
 
 @section('scripts')

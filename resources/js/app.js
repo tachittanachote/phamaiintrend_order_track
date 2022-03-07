@@ -1,6 +1,7 @@
 import $ from 'jquery'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import DataTable from'datatables.net'
 
 const Toast = Swal.mixin({
     toast: true,
@@ -16,6 +17,10 @@ const Toast = Swal.mixin({
 
 $(document).ready(() => {
     console.log("Ready!")
+
+    $('table').DataTable({
+        responsive: true
+    });
 
     const usernameFeedback = $('#username-feedback');
     const passwordFeedback = $('#password-feedback');

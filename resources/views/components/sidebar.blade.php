@@ -70,7 +70,14 @@
 	</a>
   </li>
 
-
+  <li class="side-nav-menu-item">
+	<a target="_blank" rel="noopener noreferrer" class="side-nav-menu-link media align-items-center" href="{{route('promotion')}}">
+	  <span class="side-nav-menu-icon d-flex mr-3">
+		<i class="gd-view-list-alt"></i>
+	  </span>
+	  <span class="side-nav-fadeout-on-closed media-body">จัดการโปรโมชั่น</span>
+	</a>
+  </li>
   
 </ul>
 </aside>

@@ -9,6 +9,7 @@ use App\OrderDetail;
 use App\OrderList;
 use App\OrderStatus;
 use App\OrderTrack;
+use App\Product;
 use App\ProductImage;
 use Illuminate\Http\Request;
 use App\User;
@@ -81,7 +82,7 @@ class OrderController extends Controller
             $orders->where('printed', '=', $printStatus);
         }
 
-        $result = $orders->paginate(50)->onEachSide(1)->appends(request()->query());
+        $result = $orders->paginate(15)->appends(request()->query());
 
         return view('detail', compact('result', 'customerName', 'orderId', 'current', 'deliveryStatus', 'printStatus', 'startAt', 'endAt', 'productCode', 'orderCompleted'));
     }
@@ -99,6 +100,7 @@ class OrderController extends Controller
         $excel_date = 25569 + ($str_date / 86400);
 
         $user = OrderList::where('facebook_name', $request->customer_name)->first();
+        $customer = Customer::where('facebook_name', $request->customer_name)->first();
 
         if (!$user) {
             return redirect()->back()->with('error', 'เกิดข้อผิดพลาดกรุณาลองใหม่อีกครั้ง');
@@ -106,11 +108,11 @@ class OrderController extends Controller
 
         $addOrder = OrderList::create([
             'order_number'          => $request->order_id,
-            'facebook_name'         => $user->facebook_name,
-            'customer_name'         => $user->customer_name,
+            'facebook_name'         => $customer->facebook_name,
+            'customer_name'         => $customer->real_name,
             'product_code'          => $request->product,
-            'address'               => $request->address,
-            'phone_number'          => $request->phone_number,
+            'address'               => $customer->address,
+            'phone_number'          => $customer->phone_number,
             'quantity'              => $request->quantity,
             'price'                 => $request->product_price,
             'total_price'           => $request->total_price,
@@ -439,7 +441,7 @@ class OrderController extends Controller
                                     "action": {
                                     "type": "uri",
                                     "label": "ตรวจสอบเพิ่มเติม",
-                                    "uri": "' . $request->url .'?image='.$img.'"
+                                    "uri": "' . $request->url .'?img='.$imageName.'"
                                     },
                                     "margin": "sm"
                                 },
@@ -515,7 +517,7 @@ class OrderController extends Controller
             $orders->where('printed', '=', $printStatus);
         }
 
-        $result = $orders->paginate(50)->onEachSide(1)->appends(request()->query());
+        $result = $orders->paginate(15)->appends(request()->query());
 
         return view('deliverylist', compact('result', 'customerName', 'orderId', 'deliveryStatus', 'printStatus', 'productCode', 'orderCompleted', 'facebookName'));
     }
@@ -524,7 +526,7 @@ class OrderController extends Controller
     {
         $orders = OrderList::orderBy('id', 'asc');
         $orders->where('printed', '=', 0);
-        $result = $orders->paginate(50)->onEachSide(1)->appends(request()->query());
+        $result = $orders->paginate(15)->appends(request()->query());
 
         return view('pendinglist', compact('result'));
     }
@@ -544,7 +546,7 @@ class OrderController extends Controller
             $orderLists->where('facebook_name', 'like', '%' . $facebookName . '%');
         }
 
-        $result = $orderLists->groupBy('facebook_name')->paginate(50)->appends(request()->query());
+        $result = $orderLists->groupBy('facebook_name')->paginate(15)->appends(request()->query());
 
         return view('customerlist', compact('result', 'customerName', 'facebookName'));
     }
@@ -607,6 +609,20 @@ class OrderController extends Controller
         return response()->json([
             'status' => 'success',
             'result' => $productImages,
+        ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+    }
+
+    public function productDetail(Request $request) {
+        $productCode = $request->product_code;
+
+        $product = Product::where('product_code', $productCode)->first();
+        if(!$product) {
+            $product = OrderList::where('product_code', $productCode)->first();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'result' => array('price' => $product->price, 'product_code' => $product->product_code, 'product_detail' => $product->detail),
         ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
     }
 }
