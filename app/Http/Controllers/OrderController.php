@@ -553,7 +553,7 @@ class OrderController extends Controller
 
     public function scanCheck(Request $request)
     {
-        $orderTracks = OrderTrack::where('order_id', $request->order_id)->get();
+        $orderTracks = OrderTrack::where('order_id', $request->order_id)->groupBy(['order_id', 'status'])->get();
         $orderDetail = OrderList::where('id', $request->order_id)->first();
         $editDetails = EditDetail::where('order_id', $request->order_id)->get();
         return response()->json([

@@ -163,7 +163,7 @@ class HomeController extends Controller
         $delivery = Delivery::orderBy('id', 'desc');
 
         if($request->date) {
-            $delivery->where('delivery_date', '=', $request->date);
+            $delivery->where('delivery_date', '=', Carbon::parse($request->date)->format("Y-d-m"));
         }
 
         $result = $delivery->paginate(10)->appends(request()->query());
@@ -177,7 +177,7 @@ class HomeController extends Controller
 
         $date = $request->date;
         if ($request->date) {
-            $deliveries = Delivery::where('delivery_date', '=', $request->date)->orderBy('id', 'asc')->get();
+            $deliveries = Delivery::where('delivery_date', '=', Carbon::parse($request->date)->format("Y-d-m"))->orderBy('id', 'asc')->get();
         }
         else {
             $delivery = Delivery::orderBy('id', 'desc');
