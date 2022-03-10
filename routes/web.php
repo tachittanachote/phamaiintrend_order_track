@@ -20,10 +20,12 @@ Route::get('/add-customer', 'HomeController@addCustomer')->name('add.customer');
 Route::get('/add-product-image', 'HomeController@addProductImage')->name('add.product.image');
 Route::get('/add-order', 'HomeController@addOrder')->name('add.order');
 
+Route::get('/upload-track', 'HomeController@delivery')->name('upload-track');
 Route::post('/login', 'AuthController@login')->name('login');
 Route::get('/logout', 'AuthController@logout')->name('logout');
 
 Route::post('/upload', 'UploadController@uploadXLSX')->name('uploadXLSX');
+Route::post('/upload-delivery', 'UploadController@uploadDelivery')->name('uploadDelivery');
 
 Route::post('/order/add', 'OrderController@addOrder')->name('order.add');
 Route::post('/order/remove', 'OrderController@remove')->name('order.remove');
@@ -71,3 +73,5 @@ Route::post('/logout-line', 'CustomerController@logoutLine')->name('customer.log
 Route::get('/promotion', 'PromotionController@promotion')->name('promotion');
 Route::post('/promotion/add', 'PromotionController@promotionAdd')->name('promotion.add');
 Route::post('/promotion/remove', 'PromotionController@promotionRemove')->name('promotion.remove');
+
+Route::get('/summarydelivery', 'HomeController@summarydelivery')->name('summarydelivery');

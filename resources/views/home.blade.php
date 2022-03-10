@@ -80,10 +80,25 @@
 			<a target="_blank" rel="noopener noreferrer" href="{{route('approvework')}}">
 				<div class="card flex-row align-items-center p-3 p-md-4 animate__animated animate__fadeInUp clickable">
 					<div class="icon icon-lg bg-secondary rounded-circle mr-3">
-						<i class="fas fa-users text-white"></i>
+						<i class="fas fa-clipboard-check text-white mb-2"></i>
 					</div>
 					<div>
 						<h6 class="mb-0">QC ตรวจงาน</h6>
+					</div>
+				</div>
+			</a>
+			<!-- End Widget -->
+		</div>
+
+		<div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
+			<!-- Widget -->
+			<a target="_blank" rel="noopener noreferrer" href="{{route('upload-track')}}">
+				<div class="card flex-row align-items-center p-3 p-md-4 animate__animated animate__fadeInUp clickable">
+					<div class="icon icon-lg bg-secondary rounded-circle mr-3">
+						<i class="fas fa-box text-white"></i>
+					</div>
+					<div>
+						<h6 class="mb-0">จัดการข้อมูลการส่งพัสดุ</h6>
 					</div>
 				</div>
 			</a>

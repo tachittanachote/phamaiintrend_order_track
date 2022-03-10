@@ -71,9 +71,18 @@
   </li>
 
   <li class="side-nav-menu-item">
+	<a target="_blank" rel="noopener noreferrer" class="side-nav-menu-link media align-items-center" href="{{route('upload-track')}}">
+	  <span class="side-nav-menu-icon d-flex mr-3">
+		<i class="gd-harddrives"></i>
+	  </span>
+	  <span class="side-nav-fadeout-on-closed media-body">จัดการข้อมูลการส่งพัสดุ</span>
+	</a>
+  </li>
+
+  <li class="side-nav-menu-item">
 	<a target="_blank" rel="noopener noreferrer" class="side-nav-menu-link media align-items-center" href="{{route('promotion')}}">
 	  <span class="side-nav-menu-icon d-flex mr-3">
-		<i class="gd-view-list-alt"></i>
+		<i class="gd-write"></i>
 	  </span>
 	  <span class="side-nav-fadeout-on-closed media-body">จัดการโปรโมชั่น</span>
 	</a>

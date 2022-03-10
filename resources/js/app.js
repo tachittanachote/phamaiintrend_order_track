@@ -18,9 +18,7 @@ const Toast = Swal.mixin({
 $(document).ready(() => {
     console.log("Ready!")
 
-    $('table').DataTable({
-        responsive: true
-    });
+    
 
     const usernameFeedback = $('#username-feedback');
     const passwordFeedback = $('#password-feedback');
@@ -130,6 +128,59 @@ $(document).ready(() => {
 
 
         }else {
+            upload.addClass("is-invalid")
+            uploadFeedback.css('display', 'block')
+        }
+
+    })
+
+    $("#upload-btn-delivery").on('click', function (e) {
+
+
+        e.preventDefault();
+
+
+        if (upload.val()) {
+            $(this).html("กำลังอัพโหลด ...")
+            $(this).attr('disabled', true)
+
+            upload.removeClass("is-invalid")
+            uploadFeedback.css('display', 'none')
+
+            const formData = new FormData();
+            const file = document.querySelector('#upload');
+
+            formData.append("file", file.files[0]);
+
+            axios({
+                method: 'post',
+                url: '/upload-delivery',
+                data: formData,
+                header: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+                .then(function (response) {
+                    Swal.fire({
+                        icon: response.data.status,
+                        text: response.data.result,
+                    }).then((e) => {
+                        window.location.reload();
+                    })
+                    $(this).html("ยืนยันอัพโหลด")
+                    $(this).attr('disabled', false)
+                })
+                .catch(function (response) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'ไม่สามารถดำเนินการได้'
+                    })
+                    $(this).html("ยืนยันอัพโหลด")
+                    $(this).attr('disabled', false)
+                });
+
+
+        } else {
             upload.addClass("is-invalid")
             uploadFeedback.css('display', 'block')
         }

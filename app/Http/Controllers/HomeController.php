@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Delivery;
 use App\EditDetail;
 use App\OrderList;
 use App\OrderStatus;
@@ -153,6 +154,38 @@ class HomeController extends Controller
         if(!Auth::check()) return redirect('/');
 
         return view('customeradd');
+    }
+
+    public function delivery(Request $request)
+    {
+        if (!Auth::check()) return redirect('/');
+
+        $delivery = Delivery::orderBy('id', 'desc');
+
+        if($request->date) {
+            $delivery->where('delivery_date', '=', $request->date);
+        }
+
+        $result = $delivery->paginate(10)->appends(request()->query());
+
+        return view('trackmanagement', compact('result'));
+    }
+
+    public function summarydelivery(Request $request)
+    {
+        if (!Auth::check()) return redirect('/');
+
+        $date = $request->date;
+        if ($request->date) {
+            $deliveries = Delivery::where('delivery_date', '=', $request->date)->orderBy('id', 'asc')->get();
+        }
+        else {
+            $delivery = Delivery::orderBy('id', 'desc');
+            $result = $delivery->paginate(10)->appends(request()->query());
+            return view('trackmanagement', compact('result'));
+        }
+
+        return view('summarydeliveries', compact('deliveries', 'date'));
     }
 
     public function addProductImage() {
