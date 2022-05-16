@@ -17,6 +17,7 @@ use App\WorkPrint;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use App\Notify;
 
 class OrderController extends Controller
 {
@@ -59,6 +60,7 @@ class OrderController extends Controller
         $endAt = $request->endAt;
         $productCode = $request->product_code;
         $orderCompleted = $request->order_completed;
+        $countMonth = $request->count_month;
 
         $orders = OrderList::where('facebook_name', $request->facebook_name);
 
@@ -84,7 +86,7 @@ class OrderController extends Controller
 
         $result = $orders->paginate(15)->appends(request()->query());
 
-        return view('detail', compact('result', 'customerName', 'orderId', 'current', 'deliveryStatus', 'printStatus', 'startAt', 'endAt', 'productCode', 'orderCompleted'));
+        return view('detail', compact('result', 'customerName', 'orderId', 'current', 'deliveryStatus', 'printStatus', 'startAt', 'endAt', 'productCode', 'orderCompleted', 'countMonth'));
     }
 
     public function addOrder(Request $request)
@@ -124,6 +126,7 @@ class OrderController extends Controller
             'order_timestamp'       => $excel_date,
             'note'                  => 0,
             'amount'                => $request->total_price,
+            'is_fix_product'        => $request->is_fix == "on" ? 1 : 0,
         ]);
 
         if ($addOrder) {
@@ -245,24 +248,61 @@ class OrderController extends Controller
         $orderStatus = OrderStatus::where('order_id', $order_id)->orderBy('id', 'desc')->first();
         if (!$orderStatus) {
 
-            OrderStatus::create([
-                'order_id' => $order_id,
-                'status' => 'processing'
-            ]);
+            if($order->is_fix_product == 0) {
+                OrderStatus::create([
+                    'order_id' => $order_id,
+                    'status' => 'processing'
+                ]);
 
-            OrderTrack::create([
-                'order_id' => $order_id,
-                'employee' => Auth::user()->name,
-                'employee_id' => Auth::user()->id,
-                'status' => 'processing'
-            ]);
+                OrderTrack::create([
+                    'order_id' => $order_id,
+                    'employee' => Auth::user()->name,
+                    'employee_id' => Auth::user()->id,
+                    'status' => 'processing'
+                ]);
+            } else {
+
+                OrderStatus::create([
+                    'order_id' => $order_id,
+                    'status' => 'processing'
+                ]);
+
+                OrderTrack::create([
+                    'order_id' => $order_id,
+                    'employee' => Auth::user()->name,
+                    'employee_id' => Auth::user()->id,
+                    'status' => 'processing'
+                ]);
+
+                OrderStatus::create([
+                    'order_id' => $order_id,
+                    'status' => 'cut_completed'
+                ]);
+
+                OrderTrack::create([
+                    'order_id' => $order_id,
+                    'employee' => "ระบบส่งงานแก้อัตโนมัติ",
+                    'employee_id' => "99999",
+                    'status' => 'cut_completed'
+                ]);
+            }
+
         } else {
-            $orderStatus->status = 'processing';
-            $orderStatus->save();
+            if ($order->is_fix_product == 0) {
+                $orderStatus->status = 'processing';
+                $orderStatus->save();
 
-            $orderTrack = OrderTrack::where('order_id', $order_id)->orderBy('id', 'desc')->first();
-            $orderTrack->status = 'processing';
-            $orderTrack->save();
+                $orderTrack = OrderTrack::where('order_id', $order_id)->orderBy('id', 'desc')->first();
+                $orderTrack->status = 'processing';
+                $orderTrack->save();
+            } else {
+                $orderStatus->status = 'cut_completed';
+                $orderStatus->save();
+
+                $orderTrack = OrderTrack::where('order_id', $order_id)->orderBy('id', 'desc')->first();
+                $orderTrack->status = 'cut_completed';
+                $orderTrack->save();
+            }
         }
 
         if ($order->save()) {
@@ -533,6 +573,8 @@ class OrderController extends Controller
 
     public function customerList(Request $request)
     {
+        $customerQueried = null;
+        $customerId = $request->customer_id;
         $customerName = $request->customer_name;
         $facebookName = $request->facebook_name;
 
@@ -546,14 +588,25 @@ class OrderController extends Controller
             $orderLists->where('facebook_name', 'like', '%' . $facebookName . '%');
         }
 
+        if($customerId) {
+            $id = explode("-", $customerId);
+            if(isset($id[1])) {
+                $customerQueried = Customer::where('id', $id[1])->first();
+                if($customerQueried) {
+                    $orderLists->where('facebook_name', '=', $customerQueried->facebook_name);
+                }
+                
+            }
+        }
+
         $result = $orderLists->groupBy('facebook_name')->paginate(15)->appends(request()->query());
 
-        return view('customerlist', compact('result', 'customerName', 'facebookName'));
+        return view('customerlist', compact('result', 'customerName', 'facebookName', 'customerId'));
     }
 
     public function scanCheck(Request $request)
     {
-        $orderTracks = OrderTrack::where('order_id', $request->order_id)->groupBy(['order_id', 'status'])->get();
+        $orderTracks = OrderTrack::where('order_id', $request->order_id)->groupBy(['order_id', 'status'])->orderBy('id', 'ASC')->get();
         $orderDetail = OrderList::where('id', $request->order_id)->first();
         $editDetails = EditDetail::where('order_id', $request->order_id)->get();
         return response()->json([
@@ -625,4 +678,71 @@ class OrderController extends Controller
             'result' => array('price' => $product->price, 'product_code' => $product->product_code, 'product_detail' => $product->detail),
         ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
     }
+
+    public function removeTrackingRecent(Request $request) {
+
+
+        $orderTrack = OrderTrack::where('order_id', $request->order_id)->orderBy('id', 'DESC')->first();
+        $orderStatus = OrderStatus::where('order_id', $request->order_id)->orderBy('id', 'DESC')->first();
+
+        if(!$orderTrack && !$orderStatus) {
+            $orderList = OrderList::where('id', $request->order_id)->first();
+
+            $orderList->deliveried = 0;
+            $orderList->order_completed = 0;
+            $orderList->save();
+
+        }
+
+        if($orderTrack->delete() && $orderStatus->delete()) {
+            return response()->json([
+                'status' => 'success',
+                'result' => 'ดำเนินการสำเร็จ',
+            ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'ไม่สามารถดำเนินการได้',
+            ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'result' => 'ดำเนินการสำเร็จ',
+        ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+
+    }
+ 
+    public function resetTracking(Request $request) {
+        $orderTrack = OrderTrack::where('order_id', $request->order_id)->delete();
+        $orderStatus = OrderStatus::where('order_id', $request->order_id)->delete();
+        $orderList = OrderList::where('id', $request->order_id)->first();
+
+        $orderList->deliveried = 0;
+        $orderList->order_completed = 0;
+
+        if($orderTrack && $orderStatus && $orderList->save()) {
+            return response()->json([
+                'status' => 'success',
+                'result' => 'ดำเนินการสำเร็จ',
+            ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'ไม่สามารถดำเนินการได้',
+            ], 200, array('Content-Type' => 'application\json;charset=utf8'), JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    public function orderPending(Request $request) {
+        $orderList = OrderList::orderBy('created_at', 'DESC')->paginate(15)->appends(request()->query());
+        return view('orderpending', compact('orderList'));
+    }
+
+    public function removeNotify(Request $request) {
+        Notify::where('id', $request->id)->delete();
+        return redirect()->back();
+    }
+
+
 }

@@ -87,6 +87,7 @@
                                             <th class="font-weight-semi-bold border-top-0 py-2">รูปภาพ</th>
                                             <th class="font-weight-semi-bold border-top-0 py-2"></th>
                                             <th class="font-weight-semi-bold border-top-0 py-2"></th>
+                                            <th class="font-weight-semi-bold border-top-0 py-2"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -215,6 +216,11 @@
                                                 <button class="btn btn-danger btn-sm remove-order" data-id="{{$order->id}}"><i class="far fa-trash-alt"></i> ลบ</button>
                                             </div>
                                         </td>
+                                        <td class="align-middle py-3">
+                                            <div class="d-flex align-items-center">
+                                                <button class="btn btn-success line-btn btn-sm" data-toggle="modal" data-target="#notify-{{$order->id}}"><i class="fab fa-line"></i> แจ้งตามงาน</button>
+                                            </div>
+                                        </td>
                                     </tr>
                                     @endforeach
                                     </tbody>
@@ -274,6 +280,53 @@
         </div>
         @endforeach
     @endif
+
+
+    @if(count($result) > 0)
+        @foreach($result as $order)
+        <div class="modal fade" id="notify-{{$order->id}}" tabindex="-1" aria-labelledby="notify-{{$order->id}}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ระบุข้อความแจ้งติดตามงานช่าง</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @php
+                $orderTracking = \App\OrderTrack::where('order_id', $order->id)->orderBy('id', 'desc')->first();
+                $notifies = \App\Notify::where('order_id', $order->id)->get();
+                @endphp
+                
+                <div class="mb-2">ผู้รับผิดชอบงานขณะนี้: {{isset($orderTracking->employee) ? $orderTracking->employee : "ไม่มีผู้รับผิดชอบขณะนี้"}}</div>
+
+                <div class="mb-2">รายการสถานะการแจ้งเตือนติดตาม:</div>
+                <ul class="list-group">
+                    @if(count($notifies) > 0) 
+                        @foreach($notifies as $n)
+                            <li class="list-group-item">ประเภท: {{$n->type == "broadcast" ? "บอร์ดแคส" : "แจ้งเตือนส่วนตัว"}} แจ้งให้: {{$n->type == "broadcast" ? "ทุกคน" : $n->detail}} สถานะการแจ้งเตือน: {{$n->status == "pending" ? "กำลังทำงาน" : "ยกเลิกแล้ว"}}<a href="/notify/remove/{{$n->id}}"><span class="badge bg-danger text-white">ลบการแจ้งเตือน</span></a></li>
+                        @endforeach
+                    @else
+                    <li class="list-group-item">ไม่พบรายการการแจ้งติดตามงาน</li>
+                    @endif
+                </ul>
+
+                <hr class="mb-4"/>
+                <label>ข้อความ</label>
+                <input class="form-control form-control-sm" type="text" name="notify_message-{{$order->id}}" id="notify_message-{{$order->id}}" />
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success w-100 notify" data-id="{{$order->id}}">แจ้ง</button>
+                <button type="button" class="btn btn-primary w-100" class="close" data-dismiss="modal" aria-label="Close">ยกเลิก</button>
+            </div>
+            </div>
+        </div>
+        </div>
+        @endforeach
+    @endif
+
 @endsection
 
 @section('scripts')

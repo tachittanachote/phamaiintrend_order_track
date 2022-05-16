@@ -14,16 +14,13 @@ $(document).ready(() => {
         }).then((resp) => {
             Swal.fire({
                 icon: resp.data.status,
-                title: '',
                 text: resp.data.result
             }).then(() => {
                 window.location.reload()
             })
         }).catch((err) => {
-            html5QrcodeScanner.resume();
             Swal.fire({
                 icon: 'error',
-                title: '',
                 text: 'ไม่สามารถดำเนินการได้'
             })
         })
@@ -38,16 +35,32 @@ $(document).ready(() => {
         }).then((resp) => {
             Swal.fire({
                 icon: resp.data.status,
-                title: '',
                 text: resp.data.result
             }).then(() => {
                 window.location.reload()
             })
         }).catch((err) => {
-            html5QrcodeScanner.resume();
             Swal.fire({
                 icon: 'error',
-                title: '',
+                text: 'ไม่สามารถดำเนินการได้'
+            })
+        })
+    })
+
+    $('.notify').on('click', function(e) {
+        axios.post('https://customer-api.phamaiintrend.co/line-notify', {
+            order_id: $(this).attr('data-id'),
+            message: $("#notify_message-" + $(this).attr('data-id')).val(),
+        }).then((resp) => {
+            Swal.fire({
+                icon: resp.data.status,
+                text: resp.data.result
+            }).then(() => {
+                window.location.reload()
+            })
+        }).catch((err) => {
+            Swal.fire({
+                icon: 'error',
                 text: 'ไม่สามารถดำเนินการได้'
             })
         })

@@ -76,7 +76,7 @@
 						<input type="date" class="form-control" id="order_date" name="order_date" required>
 					</div>
 					<div class="form-check mb-3">
-						<input class="form-check-input" type="checkbox" value="" id="is_fix">
+						<input class="form-check-input" type="checkbox" value="" id="is_fix" name="is_fix">
 						<label class="form-check-label" for="is_fix">
 							ระบุว่าเป็นงานแก้
 						</label>

@@ -26,7 +26,7 @@ class OrderStatus extends Model
                     return "กำลังตัด";
                 }
             case "cut_completed": {
-                    return "ตัดเสร็จแล้ว";
+                    return "ตัดเสร็จแล้ว (รอเย็บ)";
                 }
             case "sewing": {
                     return "กำลังเย็บ";

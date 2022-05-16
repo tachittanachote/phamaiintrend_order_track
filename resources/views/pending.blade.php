@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ระบบติดตามออเดอร์ของร้านผ้าไหมอินเทรนด์</title>
+    <title>LINE NOTIFICATION</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -55,34 +55,20 @@
         box-shadow: 0 1px 1px rgba(218, 218, 218, 0.075) inset, 0 0 8px #dfc4b8;
         outline: 0 none;
         }
+
+        th, td {
+                padding: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row mt-5">
-            <div class="col-lg-2 col-md-2 col-sm-12"></div>
-            <div class="col-lg-8 col-md-8 col-sm-12">
-                <div class="text-center mb-2">
-                    <img src="/images/logo.png" alt="Phamai Intrend" class="img-fluid">
-                </div>
-                <div class="h2 text-center">ระบบติดตามออเดอร์ <span>ร้านผ้าไหมอินเทรนด์</span></div>
-                <div class="text-center">กรอกหมายเลขออเดอร์เพื่อดูสถานะรายการออเดอร์ทั้งหมดของคุณ</div>
-
-
-                <div class="mt-5">
-                    <form post='/tracking' method='post'>
-                     <div class="form-group">
-                        <label for="order_number">หมายเลขออเดอร์</label>
-                        <input type="number" class="form-control" id="order_number" required>
-                    </div>
-                    <div><button type="submit" class="btn w-100 btn-pm">ตรวจสอบ</button></div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12"></div>
+    <div class="container mt-5">
+        <div class="alert alert-success" role="alert">
+            ดำเนินการสำเร็จ
+        </div>
+        <div class="alert alert-secondary" role="alert">
+            {{$status}}
         </div>
     </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
 </html>

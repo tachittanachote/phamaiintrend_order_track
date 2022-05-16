@@ -79,7 +79,7 @@
                                 <div>รายละเอียด: {{isset($order->detail) ? $order->detail : "-" }}</div>
                             </div>
                             <div class="col-lg-2 col-md-2">
-                                <div id="qrcode"></div>
+                                <div id="qrcode" class="mt-2"></div>
                             </div>
                         </div>
                         </div>
@@ -178,10 +178,11 @@
         const qrcode = new QRCode("qrcode", {
             width: 128,
             height: 128,
+			correctLevel : QRCode.CorrectLevel.H,
         });
 
         qrcode.clear();
-        qrcode.makeCode(`${window.location.protocol}//${window.location.hostname}/order/update?order_id={{$order->id}}`);
+        qrcode.makeCode('{{$order->id}}');
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

@@ -75,3 +75,11 @@ Route::post('/promotion/add', 'PromotionController@promotionAdd')->name('promoti
 Route::post('/promotion/remove', 'PromotionController@promotionRemove')->name('promotion.remove');
 
 Route::get('/summarydelivery', 'HomeController@summarydelivery')->name('summarydelivery');
+
+Route::post('/order/tracking/remove-recent', 'OrderController@removeTrackingRecent')->name('order.remove.recent');
+Route::post('/order/tracking/reset', 'OrderController@resetTracking')->name('order.reset');
+
+Route::get('/orderpending','OrderController@orderPending')->name('orderpending');
+Route::get('/notify/remove/{id}','OrderController@removeNotify')->name('remvoenotify');
+Route::get('/notify/complete','HomeController@notifyComplete')->name('remvoenotify');
+Route::get('/notify/pending','HomeController@notifyPending')->name('remvoenotify');

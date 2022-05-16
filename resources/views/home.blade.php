@@ -107,6 +107,34 @@
 
 </div>
 
+<!-- <div class="row mt-2">
+
+
+		<div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
+
+			<a target="_blank" rel="noopener noreferrer" href="{{route('orderpending')}}">
+				<div class="card flex-row align-items-center p-3 p-md-4 animate__animated animate__fadeInUp clickable">
+					<div class="icon icon-lg bg-secondary rounded-circle mr-3">
+					<i class="far fa-clock text-white"></i>
+					</div>
+					<div>
+						<h6 class="mb-0">ตรวจสอบระยะเวลาออเดอร์</h6>
+					</div>
+				</div>
+			</a>
+
+		</div>
+
+		<div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
+
+		</div>
+
+		<div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
+
+		</div>
+
+</div> -->
+
 @endsection
 
 @section('modal')

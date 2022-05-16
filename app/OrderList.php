@@ -34,6 +34,7 @@ class OrderList extends Model
         'printed',
         'deliveried',
         'order_completed',
+        'is_fix_product',
     ];
 
     public static function getProducts() {

@@ -14,6 +14,15 @@
                                 <input class="form-control form-control-sm" type="text" id="facebook_name" value="{{$facebookName ? $facebookName : ''}}" autocomplete="a"/>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
+                                <label>Customer ID</label>
+                                <input class="form-control form-control-sm" type="text" id="customer_id" value="{{$customerId ? $customerId : ''}}" autocomplete="ci"/>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
+                                <label>ชื่อ Facebook</label>
+                                <input class="form-control form-control-sm" type="text" id="facebook_name" value="{{$facebookName ? $facebookName : ''}}" autocomplete="a"/>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12 mb-2">
                                 <label>ชื่อลูกค้า</label>
                                 <input class="form-control form-control-sm" type="text" id="customer_name" value="{{$customerName ? $customerName : ''}}" autocomplete="c"/>
                             </div>
@@ -129,10 +138,16 @@
     $("#search").on("click", function(e) {
         e.preventDefault();
 
+        const customerId = $("#customer_id")
         const customerName = $("#customer_name")
         const facebookName = $("#facebook_name")
+        
 
         var querParams = {}
+
+        if(customerId.val()) {
+            Object.assign(querParams, { customer_id: customerId.val()})
+        }
 
         if(customerName.val()) {
             Object.assign(querParams, { customer_name: customerName.val()})
@@ -149,10 +164,16 @@
 	
 	$(document).keypress(function(e) {
 	  if(e.which == 13) {
+
+        const customerId = $("#customer_id")
         const customerName = $("#customer_name")
         const facebookName = $("#facebook_name")
 
         var querParams = {}
+
+        if(customerId.val()) {
+            Object.assign(querParams, { customer_id: customerId.val()})
+        }
 
         if(customerName.val()) {
             Object.assign(querParams, { customer_name: customerName.val()})

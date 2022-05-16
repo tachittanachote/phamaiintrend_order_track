@@ -17,7 +17,6 @@ class ProductController extends Controller
 
     public function addProduct(Request $request) {
 
-
         $productCheck = Product::where('product_code', $request->product_code)->first();
         $orderList = OrderList::where('product_code', $request->product_code)->first();
 

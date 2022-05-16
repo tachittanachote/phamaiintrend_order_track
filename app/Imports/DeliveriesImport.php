@@ -25,7 +25,7 @@ class DeliveriesImport implements ToCollection, WithStartRow
                 
             } else {
                 Delivery::updateOrCreate([
-                        'delivery_date'            => Carbon::parse($row->all()[0])->format("Y-m-d"),
+                        'delivery_date'            => Carbon::createFromFormat('d/m/Y', $row->all()[0])->format("Y-m-d"),
                         'customer_name'            => str_replace("คุณ", "", $row->all()[3]),
                         'tracking_id'              => $row->all()[8],
                         'carrier'                  => $row->all()[9],

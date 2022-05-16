@@ -39,19 +39,19 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 mb-2">
                                 <label>สถานะออเดอร์</label>
                                 <select class="form-control form-control-sm" id="order_completed">
-                                    <option {{!isset($orderCompleted) || $orderCompleted != "1" || $orderCompleted != "0" ? 'selected': ''}} value="3">ไม่ได้ระบุ</option>
-                                    <option {{isset($orderCompleted) && $orderCompleted == "0" ? 'selected': ''}} value="0">อยู่ระหว่างดำเนินการ</option>
-                                    <option {{isset($orderCompleted) && $orderCompleted == "1" ? 'selected': ''}} value="1">ดำเนินการเสร็จสิ้น</option>
+                                    <option {{!isset($orderCompleted) || $orderCompleted != "1" || $orderCompleted != "2" || $orderCompleted != "4" || $orderCompleted != "5" || $orderCompleted != "6" || $orderCompleted != "0" ? 'selected': ''}} value="3">ไม่ได้ระบุ</option> <!-- # # !-->
+                                    <option {{isset($orderCompleted) && $orderCompleted == "0" ? 'selected': ''}} value="0">อยู่ระหว่างดำเนินการ</option> <!-- # # !-->
+                                    <option {{isset($orderCompleted) && $orderCompleted == "7" ? 'selected': ''}} value="7">อยู่ในระหว่างส่งงานช่าง</option>
+                                    <option {{isset($orderCompleted) && $orderCompleted == "2" ? 'selected': ''}} value="2">กำลังตัด</option>
+                                    <option {{isset($orderCompleted) && $orderCompleted == "4" ? 'selected': ''}} value="4">ตัดเสร็จแล้ว (รอเย็บ)</option>
+                                    <option {{isset($orderCompleted) && $orderCompleted == "5" ? 'selected': ''}} value="5">กำลังเย็บ</option>
+                                    <option {{isset($orderCompleted) && $orderCompleted == "6" ? 'selected': ''}} value="6">เย็บเสร็จแล้ว</option>
+                                    <option {{isset($orderCompleted) && $orderCompleted == "1" ? 'selected': ''}} value="1">ดำเนินการเสร็จสิ้น</option> <!-- # # !-->
+
                                 </select>
                             </div>
                         </div>
 
-                        <div class="row" id="delivery_time_block" style="display: none;">
-                            <div class="col-12 mb-2">
-                                <label>ระบุช่วงเวลาสถานะออเดอร์</label>
-                                <input class="form-control" id="deli" type="text">
-                            </div>
-                        </div>
 
 
                         <div class="row">
@@ -109,6 +109,28 @@
 
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12 mb-2">
+                                <label>ระยะเวลางานที่ตกค้าง</label>
+                                <select class="form-control form-control-sm" id="countMonth">
+                                    <option value="-1" {{!isset($countMonth) || isset($countMonth) && $countMonth == "-1" ? 'selected': ''}}>ไม่ได้ระบุ</option>
+                                    <option value="0" {{isset($countMonth) && $countMonth == "0" ? 'selected': ''}}>น้อยกว่า 1 เดือน</option>
+                                    <option value="1" {{isset($countMonth) && $countMonth == "1" ? 'selected': ''}}>1 เดือน</option>
+                                    <option value="2" {{isset($countMonth) && $countMonth == "2" ? 'selected': ''}}>2 เดือน</option>
+                                    <option value="3" {{isset($countMonth) && $countMonth == "3" ? 'selected': ''}}>3 เดือน</option>
+                                    <option value="4" {{isset($countMonth) && $countMonth == "4" ? 'selected': ''}}>4 เดือน</option>
+                                    <option value="5" {{isset($countMonth) && $countMonth == "5" ? 'selected': ''}}>5 เดือน</option>
+                                    <option value="6" {{isset($countMonth) && $countMonth == "6" ? 'selected': ''}}>6 เดือน</option>
+                                    <option value="7" {{isset($countMonth) && $countMonth == "7" ? 'selected': ''}}>7 เดือน</option>
+                                    <option value="8" {{isset($countMonth) && $countMonth == "8" ? 'selected': ''}}>8 เดือน</option>
+                                    <option value="9" {{isset($countMonth) && $countMonth == "9" ? 'selected': ''}}>9 เดือน</option>
+                                    <option value="10" {{isset($countMonth) && $countMonth == "10" ? 'selected': ''}}>10 เดือน</option>
+                                    <option value="11" {{isset($countMonth) && $countMonth == "11" ? 'selected': ''}}>11 เดือน</option>
+                                    <option value="12" {{isset($countMonth) && $countMonth == "12" ? 'selected': ''}}>12 เดือน</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 mb-2">
                                 <button type="button" class="btn btn-primary btn-sm w-100" id="search"><i class="fas fa-search"></i> ค้นหา</button>
                             </div>
                         </div>
@@ -125,6 +147,7 @@
                                 <table class="table text-nowrap mb-0">
                                     <thead>
                                         <tr>
+                                            <th class="font-weight-semi-bold border-top-0 py-2">ID</th>
                                             <th class="font-weight-semi-bold border-top-0 py-2">เลขที่ Order</th>
                                             <th class="font-weight-semi-bold border-top-0 py-2">วันที่</th>
                                             <th class="font-weight-semi-bold border-top-0 py-2">ชื่อ Facebook</th>
@@ -145,6 +168,11 @@
                                     $count = $count + 1
                                     @endphp
                                     <tr>
+                                    <td class="align-middle py-3">
+                                            <div class="d-flex align-items-center">
+                                                {{$order->id}}
+                                            </div>
+                                        </td>
                                         <td class="align-middle py-3">
                                             <div class="d-flex align-items-center">
                                                 {{$order->order_number}}
@@ -557,7 +585,7 @@
     }
 
     $("#order_completed").on('change', function(e) {
-        if($(this).val() == 0 || $(this).val() == 1) {
+        if($(this).val() != 3) {
             $("#delivery_time_block").css('display', 'block')
         } else {
             $("#delivery_time_block").css('display', 'none')
@@ -571,6 +599,7 @@
     $("#search").on("click", function(e) {
         e.preventDefault();
 
+        const countMonth = $("#countMonth")
         const orderId = $("#order_id")
         const customerName = $("#customer_name")
         const facebookName = $("#facebook_name")
@@ -617,6 +646,12 @@
             Object.assign(querParams, { delivery_status: deliveryStatus.val()})
         }
 
+        if(countMonth.val() != "-1") {
+            Object.assign(querParams, { count_month: countMonth.val()})
+        }
+
+        
+
         if(printStatus.val() == 1) {
             if(!$("#workTimeCheck").is(":checked")) {
                 Object.assign(querParams, { 
@@ -650,12 +685,6 @@
             }
         }
 
-        if(deli_startDate && deli_endDate) {
-            Object.assign(querParams, { 
-                'deli_startDate': `${deli_startDate}`, 
-                'deli_endDate': `${deli_endDate}`, 
-            })
-        }
 
         const querystring = queryBuilder(querParams);
         window.location.href = `/order?${querystring}`
@@ -664,6 +693,8 @@
 	
 	$(document).keypress(function(e) {
 	  if(e.which == 13) {
+
+        const countMonth = $("#countMonth")
 		const orderId = $("#order_id")
         const customerName = $("#customer_name")
         const facebookName = $("#facebook_name")
@@ -710,12 +741,44 @@
             Object.assign(querParams, { delivery_status: deliveryStatus.val()})
         }
 
-        if(deli_startDate && deli_endDate) {
-            Object.assign(querParams, { 
-                'deli_startDate': `${deli_startDate}`, 
-                'deli_endDate': `${deli_endDate}`, 
-            })
+        if(countMonth.val() != "-1") {
+            Object.assign(querParams, { count_month: countMonth.val()})
         }
+
+        if(printStatus.val() == 1) {
+            if(!$("#workTimeCheck").is(":checked")) {
+                Object.assign(querParams, { 
+                    print_status: printStatus.val()
+                })
+            }
+            if($("#workTimeCheck").is(":checked")) {
+                Object.assign(querParams, { 
+                    print_status: printStatus.val(),
+                    print_check: "true",
+                    print_startDate: print_startDate,
+                    print_endDate: print_endDate
+                })
+            }
+        }
+
+        if(deliveryStatus.val() == 1) {
+            
+            if(!$("#customerTimeCheck").is(":checked")) {
+                Object.assign(querParams, { 
+                    delivery_status: deliveryStatus.val()
+                })
+            }
+            if($("#customerTimeCheck").is(":checked")) {
+                Object.assign(querParams, { 
+                    delivery_status: deliveryStatus.val(),
+                    delivery_check: "true",
+                    delivery_startDate: delivery_startDate,
+                    delivery_endDate: delivery_endDate
+                })
+            }
+        }
+
+        
 
         const querystring = queryBuilder(querParams);
         window.location.href = `/order?${querystring}`

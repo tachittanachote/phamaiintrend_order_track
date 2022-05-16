@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\OrderTrack;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -54,13 +55,21 @@ class HomeController extends Controller
         $printCheck  = $request->print_check;
         $deliveryCheck = $request->delivery_check;
 
+        $countMonth = $request->count_month;
+
         $current = Carbon::now();
+
+        $orderLists = OrderList::select("*");
+
+        
 
         if($startAt && $endAt)
         {
-            $orderLists = OrderList::select("order_lists.*")->whereBetween('order_date', [$startAt ? Carbon::parse($startAt)->format('Y-m-d') : $current->format('Y-m-d'), $endAt ? Carbon::parse($endAt)->format('Y-m-d') : $current->format('Y-m-d')])->orderBy('order_lists.id', 'asc');
-        } else {
-            $orderLists = OrderList::select("order_lists.*")->orderBy('order_lists.id', 'asc');
+            $orderLists->whereBetween('order_date', [$startAt ? Carbon::parse($startAt)->format('Y-m-d') : $current->format('Y-m-d'), $endAt ? Carbon::parse($endAt)->format('Y-m-d') : $current->format('Y-m-d')])->orderBy('order_lists.id', 'asc');
+        } 
+        
+        if(!isset($startAt) && !isset($endAt) && !isset($orderId) && !isset($customerName) && !isset($facebookName) && !isset($productCode) && !isset($deliveryStatus) && !isset($printStatus) && !isset($orderCompleted) && !isset($countMonth) ) {
+            $orderLists->orderBy('order_lists.id', 'asc');
         }
 
         if($orderId) {
@@ -96,19 +105,115 @@ class HomeController extends Controller
 
         if ($orderCompleted == "0" || $orderCompleted == "1") {
             $orderLists->where('order_completed', '=', $orderCompleted);
-            if($deli_startDate && $deli_endDate) {
+            // if($deli_startDate && $deli_endDate) {
 
-                $deli_startDate = Carbon::parse($deli_startDate)->format('Y-m-d');
-                $deli_endDate = Carbon::parse($deli_endDate)->format('Y-m-d');
+            //     $deli_startDate = Carbon::parse($deli_startDate)->format('Y-m-d');
+            //     $deli_endDate = Carbon::parse($deli_endDate)->format('Y-m-d');
 
                 #return Carbon::parse($request->deli_startDate)->format('Y-m-d h:i:s')." ". Carbon::parse($request->deli_endDate)->format('Y-m-d h:i:s');
 
                 if($orderCompleted == "1") {
-                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->where('order_statuses.status', '=', 'shipped')->whereBetween('order_statuses.created_at', [Carbon::parse($deli_startDate)->format('Y-m-d') . " 00:00:00", Carbon::parse($deli_endDate)->format('Y-m-d') . " 23:59:59"]);
-                } else {
-                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->where('order_statuses.status', '!=', 'shipped')->whereBetween('order_statuses.created_at', [Carbon::parse($deli_startDate)->format('Y-m-d') . " 00:00:00", Carbon::parse($deli_endDate)->format('Y-m-d') . " 23:59:59"]);
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'shipped');
+                    });
                 }
-            }
+                 
+                if($orderCompleted == "0") {
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'pending');
+                    });
+                }
+            //}
+        }
+
+        if ($orderCompleted == "2" || $orderCompleted == "4" || $orderCompleted == "5" || $orderCompleted == "6" || $orderCompleted == "7") {
+                //DESC
+                if($orderCompleted == "2") { // กำลังตัด
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'cutting');
+                    });
+                }
+                if($orderCompleted == "4") { //ตัดเสร็จแล้ว (รอเย็บ)
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'cut_completed');
+                    });
+                }
+                if($orderCompleted == "5") { //กำลังเย็บ
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'sewing');
+                    });
+                }
+                if($orderCompleted == "6") { //เย็บเสร็จแล้ว
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'sew_completed');
+                    });
+                }
+                if($orderCompleted == "7") { //processing
+                    $sub = DB::raw('
+                        (SELECT order_id,
+                            MAX(id) AS `id`
+                        FROM order_statuses
+                        GROUP BY order_id) max_table'
+                    );
+
+                    $orderLists->join('order_statuses', 'order_statuses.order_id', '=', 'order_lists.id')->select('order_lists.deliveried', 'order_lists.printed', 'order_lists.order_number','order_lists.order_date','order_lists.product_code','order_lists.customer_name','order_lists.facebook_name','order_statuses.order_id as id', 'order_statuses.status as status')->join($sub, function($join) {
+                        $join->on('max_table.order_id', '=', 'order_lists.id')
+                        ->on('max_table.id', '=', 'order_statuses.id')->where('order_statuses.status', '=', 'processing');
+                    });
+                }
+            
+        }
+
+        if(isset($countMonth) && $countMonth >= 0) {
+            $orderLists->where('order_lists.created_at', '<=', Carbon::now()->subMonths($countMonth)->toDateTimeString());
         }
 
         $result = $orderLists->paginate(50)->onEachSide(1)->appends(request()->query());
@@ -132,6 +237,7 @@ class HomeController extends Controller
             'delivery_endDate',
             'printCheck',
             'deliveryCheck',
+            'countMonth',
         ));
     }
 
@@ -177,7 +283,7 @@ class HomeController extends Controller
 
         $date = $request->date;
         if ($request->date) {
-            $deliveries = Delivery::where('delivery_date', '=', Carbon::parse($request->date)->format("Y-d-m"))->orderBy('id', 'asc')->get();
+            $deliveries = Delivery::where('delivery_date', '=', Carbon::parse($request->date)->format("Y-m-d"))->orderBy('id', 'asc')->get();
         }
         else {
             $delivery = Delivery::orderBy('id', 'desc');
@@ -229,10 +335,10 @@ class HomeController extends Controller
             }
 
             if ($request->order_process_status != 'shipped') {
-                OrderList::where('id', $order_id)->update(['order_completed' =>0 ]);
+                OrderList::where('id', $order_id)->update(['order_completed' => 0 ]);
             }
 
-            $orderStatus = OrderStatus::updateOrCreate([
+            $orderStatus = OrderStatus::create([
                 'order_id' => $order_id,
                 'status' => $request->order_process_status
             ]);
@@ -464,6 +570,16 @@ class HomeController extends Controller
         $order_edit_details = EditDetail::where('order_id', $order_id)->get();
         $order_statuses = OrderTrack::where('order_id', $order_id)->orderBy('created_at', 'asc')->get();
         return view('timeline', compact('order_detail', 'order_edit_details', 'order_statuses'));
+    }
+
+    public function notifyComplete(Request $request) {
+        $status = "ปิดการแจ้งเตือนสำหรับงานนี้แล้ว";
+        return view('pending', compact('status'));
+    }
+
+    public function notifyPending(Request $request) {
+        $status = "เปิดการแจ้งเตือนสำหรับงานนี้แล้ว";
+        return view('pending', compact('status'));
     }
 
 }

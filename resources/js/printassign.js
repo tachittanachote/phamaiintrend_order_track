@@ -51,14 +51,18 @@ $(document).ready(() => {
     $("#print").on("click", function (e) {
         var printButton = document.getElementById("print");
         var backButton = document.getElementById("back");
+		var saveImage = document.getElementById("save_image");
 
         printButton.style.visibility = 'hidden';
         backButton.style.visibility = 'hidden';
+		saveImage.style.visibility = 'hidden';
+		
 
         window.print()
 
         printButton.style.visibility = 'visible';
         backButton.style.visibility = 'visible';
+		saveImage.style.visibility = 'visible';
     })
 })
 

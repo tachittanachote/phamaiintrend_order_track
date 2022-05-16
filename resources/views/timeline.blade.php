@@ -156,11 +156,57 @@ html, body {
 
           </div>
         </div>
+        <button type="button" class="btn btn-warning w-100 mb-2" id="remove-recent" data-id="{{$order_detail->id}}">ลบสถานนะงานล่าสุด</button>
+          <button type="button" class="btn btn-warning w-100 mb-2" id="reset" data-id="{{$order_detail->id}}">รีเซ็ตสถานะงาน</button>
         <button onclick="history.back()" type="button" class="btn btn-danger w-100 mb-5">ย้อนกลับ</button>
     </div>
   </div>
 </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js" integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.4/dist/sweetalert2.all.min.js" integrity="sha256-COxwIctJg+4YcOK90L6sFf84Z18G3tTmqfK98vtnz2Q=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
-</html>
+
+      <script>
+        $("#remove-recent").on("click", function(e) {
+          const id = $(this).attr("data-id");
+          axios.post('/order/tracking/remove-recent', {
+                order_id: id
+            }).then((resp) => {
+              Swal.fire({
+                    icon: resp.data.status,
+                    title: resp.data.result
+                })
+                if (resp.data.status === "success") {
+                    window.location.reload();
+                }
+
+            }).catch((err) => {
+              Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่สามารถดำเนินการได้'
+                })
+            })
+      })
+
+      $("#reset").on("click", function(e) {
+          const id = $(this).attr("data-id");
+          axios.post('/order/tracking/reset', {
+                order_id: id
+            }).then((resp) => {
+                Swal.fire({
+                    icon: resp.data.status,
+                    title: resp.data.result
+                }).then(() => {
+                    window.location.reload();
+                })
+            }).catch((err) => {
+                Swal.fire({
+                        icon: 'error',
+                        text: 'ไม่สามารถดำเนินการได้',
+                    })
+            })
+      })
+      </script>
+    </html>
